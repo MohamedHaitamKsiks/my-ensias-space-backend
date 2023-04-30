@@ -1,3 +1,6 @@
+#compiled ts
+build/
+
 # Logs
 logs
 *.log
