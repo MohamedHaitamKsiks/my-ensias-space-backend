@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon",
+    "clear": "rimraf ./build",
     "build": "rimraf ./build && tsc",
+    "test:all": "npm run test:database && npm run test:models && npm run test:api",
+    "test:database": "jest --runInBand ./database.test.ts",
+    "test:models": "jest --runInBand ./models",
+    "test:api": "jest --runInBand ./api",
     "start": "npm run build && node build/index.js"
   },
   "repository": {
@@ -19,10 +24,30 @@
   },
   "homepage": "https://github.com/MohamedHaitamKsiks/my-ensias-space-backend#readme",
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
+    "@types/express": "^4.17.17",
+    "@types/express-session": "^1.17.7",
+    "@types/jest": "^29.5.1",
     "@types/node": "^18.16.3",
+    "@types/nodemailer": "^6.4.7",
+    "@types/randomstring": "^1.1.8",
+    "@types/supertest": "^2.0.12",
     "nodemon": "^2.0.22",
     "rimraf": "^5.0.0",
+    "supertest": "^6.3.3",
+    "supertest-session": "^4.1.0",
+    "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "crypto-hash": "^2.0.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.2.4",
+    "nodemailer": "^6.9.1",
+    "randomstring": "^1.2.3",
+    "sequelize": "^6.31.0",
+    "sqlite3": "^5.1.6"
   }
 }
