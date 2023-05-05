@@ -11,6 +11,7 @@
     "test:database": "jest --runInBand ./database.test.ts",
     "test:models": "jest --runInBand ./models",
     "test:api": "jest --runInBand ./api",
+    "test:file": "jest --runInBand",
     "start": "npm run build && node build/index.js"
   },
   "repository": {

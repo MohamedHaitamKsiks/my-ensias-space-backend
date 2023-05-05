@@ -6,6 +6,10 @@ import { application } from './config/application.config';
 import { sequelize } from './database/connection';
 //routers
 import { userRouter } from './router/user.router';
+import { setupModelRelation } from './model/model';
+
+//setup model relation
+setupModelRelation();
 
 //create app
 export const app = express();
@@ -21,7 +25,10 @@ declare module "express-session" {
 
 //sync database
 export async function syncDatabase() {
+    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+    await sequelize.drop();
     await sequelize.sync({ force: true });
+    await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
 };
 
 

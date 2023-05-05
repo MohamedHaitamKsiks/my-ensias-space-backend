@@ -26,7 +26,6 @@ userRouter.post('/changepassword', userMiddleware.verifyUserLogged, userControll
 //logout
 userRouter.post('/logout', userController.logout);
 
-
 //add account
 userRouter.post('/add', userMiddleware.verifyUserLogged, userController.add);
 

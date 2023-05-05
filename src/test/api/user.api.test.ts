@@ -149,7 +149,7 @@ describe('Test User API', () => {
         const response = await agent.post('/user/add')
             .send({
                 email: 'katelyn.kunze@ethereal.email',
-                type: UserType.ETUDIANT
+                type: UserType.ADMIN
             });  
 
         expect(response.body.state).toEqual(AddAccountState.EMAIL_ALREADY_EXISTS);

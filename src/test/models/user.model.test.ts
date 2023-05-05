@@ -1,10 +1,10 @@
-import exp from "constants";
+import { syncDatabase } from "../../app";
 import { sequelize } from "../../database/connection";
+import { Etudiant } from "../../model/etudiant.model";
 import { AuthState, User, UserInterface, UserType } from "../../model/user.model";
 
 beforeAll(async () => {
-    await sequelize.drop();
-    await User.sync({ force: true });
+    await syncDatabase();
 });
 
 afterAll(async () => {
@@ -37,7 +37,6 @@ describe('User Model', () => {
             type: testUser.type,
             typeName: testUser.getTypeName()
         };  
-        console.log(expectedIUser);
         expect(testUser.getUserInterface()).toEqual(expectedIUser);
     });
 
