@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User, UserInterface, AuthState, AuthResponse, UserType } from "../model/user.model";
 import randomstring from "randomstring"
+import { Etudiant } from "../model/etudiant.model";
 
 //login response
 export interface LoginResponse {
@@ -66,6 +67,15 @@ export const userController = {
             //create session
             req.session.userId = auth.user?.id;
             loginResponse.user = auth.user?.getUserInterface();
+        }
+
+        //check if etudiant
+        if (auth.user?.type == UserType.ETUDIANT) {
+            req.session.etudiantId = (await Etudiant.findOne({
+                where: {
+                    userId: req.session.userId
+                }
+            }))?.id;
         }
 
         res.statusCode = 200;

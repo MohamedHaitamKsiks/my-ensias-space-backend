@@ -1,44 +1,43 @@
 import { BelongsToGetAssociationMixin, DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasOneGetAssociationMixin, Model } from 'sequelize';
 import { sequelize } from '../../database/connection';
-import { Classe } from '../classe.model';
-import { Timeline } from './timeline.model';
+import { Emploi } from './emploi.model';
 
 
 //create user class
-export class Emploi extends Model {
+export class Timeline extends Model {
     //data
     declare id: number;
-    declare semaine: number;
-    declare semestre: number;
+    declare jour: number;
+    declare debut: number;
+    declare fin: number;
 
-    //get classe
-    declare getClasse: BelongsToGetAssociationMixin<Classe>;
-
-    //timlines
-    declare getTimelines: HasManyGetAssociationsMixin<Timeline>;
-    declare addTimeline: HasManyAddAssociationMixin<Timeline, number>;
-
+    //
+    declare getEmploi: BelongsToGetAssociationMixin<Emploi>;
 }
 
 //init model
-Emploi.init({
+Timeline.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    semaine: {
+    jour: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    semestre: {
-        type: DataTypes.INTEGER,
+    debut: {
+        type: DataTypes.DOUBLE,
+        allowNull: false
+    },
+    fin: {
+        type: DataTypes.DOUBLE,
         allowNull: false
     }
 },
 //params
 {
     sequelize,
-    modelName: 'Emploi'
+    modelName: 'Timeline'
 });
 

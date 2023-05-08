@@ -5,12 +5,13 @@ import { Classe } from '../classe.model';
 
 //create user class
 export class Delegue extends Model {
+    declare id: number;
     declare roleId: number;
     //get classe
     declare getClasse: BelongsToGetAssociationMixin<Classe>;
     //get role
     declare getRole: BelongsToGetAssociationMixin<Role>;
-
+    
 }
 
 //init model

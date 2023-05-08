@@ -2,6 +2,7 @@ import {  DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, Ha
 import { sequelize } from '../database/connection';
 import { Etudiant } from './etudiant.model';
 import { Delegue } from './role/delegue.model';
+import { Emploi } from './emploi/emploi.model';
 
 
 //create user class
@@ -26,6 +27,10 @@ export class Classe extends Model {
         const etudiant = await role.getEtudiant();
         return etudiant;
     };
+
+    //emploi
+    declare getEmplois: HasManyGetAssociationsMixin<Emploi>;
+    declare addEmploi: HasManyAddAssociationMixin<Emploi, number>;
 }
 
 //init model

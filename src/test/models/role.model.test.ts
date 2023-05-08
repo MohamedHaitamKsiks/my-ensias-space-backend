@@ -14,7 +14,7 @@ afterAll(async () => {
 });
 
 //jest tests
-describe('Classe Model', () => {
+describe('Role Model', () => {
 
     let testEtudiant: Etudiant;
 

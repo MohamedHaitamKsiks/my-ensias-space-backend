@@ -8,18 +8,18 @@ import { sequelize } from './database/connection';
 import { userRouter } from './router/user.router';
 import { setupModelRelation } from './model/model';
 
-//setup model relation
-setupModelRelation();
-
 //create app
 export const app = express();
 let server: any;
 const port = application.port;
 
+setupModelRelation();
+
 //session data
 declare module "express-session" {
     interface SessionData {
-        userId?: number
+        userId?: number,
+        etudiantId?: number
     }
 }
 
@@ -29,6 +29,7 @@ export async function syncDatabase() {
     await sequelize.drop();
     await sequelize.sync({ force: true });
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+    
 };
 
 

@@ -2,6 +2,9 @@ import { BelongsToGetAssociationMixin, DataTypes, HasManyAddAssociationMixin, Ha
 import { sequelize } from '../database/connection';
 import { User } from './user.model';
 import { Role } from './role/role.model';
+import { Poste } from './forum/post.model';
+import { Forum } from './forum/forum.mode';
+import { Acces, Permission } from './forum/acces.model';
 
 //create user class
 export class Etudiant extends Model {
@@ -20,6 +23,96 @@ export class Etudiant extends Model {
     declare getRoles: HasManyGetAssociationsMixin<Role>;
     declare hasRole: HasManyHasAssociationMixin<Role, number>;
     declare addRole: HasManyAddAssociationMixin<Role, number>;
+
+    //create forum
+    async createForum(_sujet: string, _desciption: Poste) {
+        //create forum
+        const newForum = await Forum.create({
+            sujet: _sujet
+        });
+        //add this etudiant as admin
+        const adminAcces = await Acces.create({
+            EtudiantId: this.id,
+            permission: Permission.ADMIN
+        });
+        await newForum.addAcces(adminAcces);
+        //add description poste
+        await this.postInForum(newForum, _desciption);
+
+        return newForum;
+    }
+
+    //close forum
+    async closeForum(_forum: Forum) {
+        //check if admin
+        const acces = await _forum.getAccesOf(this);
+        if (!acces || !acces.isAdmin()) {
+            return false;
+        }
+        //close forum
+        _forum.estFerme = true;
+        await _forum.save();
+        return true;
+    }
+
+    //post in forum
+    async postInForum(_forum: Forum,_poste: Poste) {
+        //check if closed
+        if (_forum.estFerme) {
+            _poste.destroy();
+            return false;
+        }
+        //check if can write
+        const acces = await _forum.getAccesOf(this);
+        if (!acces || !acces.canWrite()) {
+            _poste.destroy();
+            return false;
+        }
+        //add poste
+        _poste.setDataValue('EtudiantId', this.id);
+        await _forum.addPoste(_poste);
+        return true;
+    }
+
+    //read forum
+    async readForum(_forum: Forum) {
+        //check if can read
+        const acces = await _forum.getAccesOf(this);
+        if (!acces || !acces.canRead()) {
+            return null;
+        }
+        //add poste
+        const postes = await _forum.getPostes();
+        return postes;
+    }
+
+    //set access for user
+    async setAccesToForum(_forum: Forum, _etudiant: Etudiant, _permission: Permission) {
+        //check if admin
+        const acces = await _forum.getAccesOf(this);
+        if (!acces || !acces.isAdmin()) {
+            return false;
+        }
+        //create if not existe
+        let etudiantAcces: Acces|null = await _forum.getAccesOf(_etudiant);
+        if (!etudiantAcces) {
+            etudiantAcces = await Acces.create({
+                EtudiantId: _etudiant.id,
+                permission: _permission
+            });
+            await _forum.addAcces(etudiantAcces);
+        }
+        //destroy if none permission (no need to keep it)
+        if (etudiantAcces.permission == Permission.NONE) {
+            await etudiantAcces.destroy();
+        }
+        //acces set succes
+        return true;
+        
+    }
+    
+
+    
 }
 
 //init model

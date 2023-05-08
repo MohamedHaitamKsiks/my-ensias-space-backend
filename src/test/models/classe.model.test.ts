@@ -62,9 +62,4 @@ describe('Classe Model', () => {
 
    
 
-    it('add delegue as a role',async () => {
-        
-    });
-
-
 });
