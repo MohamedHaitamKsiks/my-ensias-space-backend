@@ -1,10 +1,11 @@
-import { BelongsToGetAssociationMixin, DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasOneGetAssociationMixin, Model } from 'sequelize';
+import { BelongsToGetAssociationMixin, BelongsToManyGetAssociationsMixin, DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyRemoveAssociationMixin, HasOneGetAssociationMixin, Model } from 'sequelize';
 import { sequelize } from '../database/connection';
 import { User } from './user.model';
 import { Role } from './role/role.model';
 import { Poste } from './forum/post.model';
 import { Forum } from './forum/forum.mode';
 import { Acces, Permission } from './forum/acces.model';
+import { Club } from './club.model';
 
 //create user class
 export class Etudiant extends Model {
@@ -19,10 +20,14 @@ export class Etudiant extends Model {
     //get user
     declare getUser: BelongsToGetAssociationMixin<User>;
 
+    //get clubs
+    declare getClubs: BelongsToManyGetAssociationsMixin<Club>;
+
     //role
     declare getRoles: HasManyGetAssociationsMixin<Role>;
     declare hasRole: HasManyHasAssociationMixin<Role, number>;
     declare addRole: HasManyAddAssociationMixin<Role, number>;
+    declare removeRole: HasManyRemoveAssociationMixin<Role, number>;
 
     //create forum
     async createForum(_sujet: string, _desciption: Poste) {
@@ -140,4 +145,5 @@ Etudiant.init({
     sequelize,
     modelName: 'Etudiant'
 });
+
 

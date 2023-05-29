@@ -16,7 +16,7 @@ afterAll(async () => {
 
 //jest tests
 describe('Forum Model', () => {
-
+    
     let testEtudiant: Etudiant;
     let otherEtudiant: Etudiant;
 

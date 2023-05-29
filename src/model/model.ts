@@ -10,6 +10,8 @@ import { Poste } from "./forum/post.model";
 import { Matiere } from "./matiere/matiere.model";
 import { Professeur } from "./matiere/professeur.model";
 import { Acces } from "./forum/acces.model";
+import { Document } from "./document.model";
+import { Club } from "./club.model";
 
 
 export function setupModelRelation() {
@@ -37,7 +39,7 @@ export function setupModelRelation() {
     Emploi.belongsTo(Classe);
     
     //timeline to emploi
-    //Emploi.hasMany(Timeline);
+    Emploi.hasMany(Timeline);
     //Timeline.belongsTo(Emploi);
     
     //matiere to timeline
@@ -47,6 +49,9 @@ export function setupModelRelation() {
     //forum to poste
     Forum.hasMany(Poste);
     Poste.belongsTo(Forum);
+
+    //documents to poste
+    Poste.hasMany(Document);
 
     //forum to access
     Forum.hasMany(Acces);
@@ -64,5 +69,11 @@ export function setupModelRelation() {
     Professeur.hasMany(Matiere);
     Matiere.belongsTo(Professeur);
 
-    
+    //club
+    Club.belongsToMany(Etudiant, {
+        through: 'ClubMembers'
+    });
+    Etudiant.belongsToMany(Club, {
+        through: 'ClubMembers'
+    });
 }

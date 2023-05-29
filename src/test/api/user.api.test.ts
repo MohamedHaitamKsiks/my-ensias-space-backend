@@ -100,7 +100,7 @@ describe('Test User API', () => {
 
         //test if logout is working
         const responseInfo = await agent.get('/user/info');
-        expect(responseInfo.body.logged).not.toBe(undefined);
+        expect(responseInfo.body.notLogged).toBe(true);
 
     });
 

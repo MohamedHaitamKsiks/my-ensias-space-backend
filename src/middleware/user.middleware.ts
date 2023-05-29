@@ -5,7 +5,7 @@ export const userMiddleware = {
     verifyUserLogged: (req: Request, res: Response, next: NextFunction) => {
         if (!req.session.userId) {
             res.send({
-                logged: false
+                notLogged: true
             });
         }       
         else

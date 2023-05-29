@@ -3,6 +3,7 @@ import { sequelize } from '../../database/connection';
 import { Poste } from './post.model';
 import { Acces } from './acces.model';
 import { Etudiant } from '../etudiant.model';
+import { Document } from '../document.model';
 
 
 //create user class
