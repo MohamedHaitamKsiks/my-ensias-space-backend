@@ -9,12 +9,26 @@ export enum DocumentType {
     OTHER
 } 
 
+export interface DocumentInterface {
+    id: number,
+    path: string,
+    type: DocumentType
+};
+
 //create user class
 export class Document extends Model {
     //declar params
     declare id: number;
     declare path: string;
     declare type: DocumentType;
+
+    getDocumentInterface(): DocumentInterface {
+        return {
+            id: this.id,
+            path: this.path,
+            type: this.type
+        }
+    }
 }
 
 //init model

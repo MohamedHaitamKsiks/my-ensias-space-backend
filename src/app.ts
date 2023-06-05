@@ -7,6 +7,7 @@ import { sequelize } from './database/connection';
 //routers
 import { userRouter } from './router/user.router';
 import { setupModelRelation } from './model/model';
+import { etudiantRouter } from './router/etudiant.router';
 
 //create app
 export const app = express();
@@ -48,6 +49,7 @@ export async function startApp() {
 
     //add routes
     app.use('/user', userRouter);
+    app.use('/etudiant', etudiantRouter);
 
     //start app
     server = app.listen(port, () => {

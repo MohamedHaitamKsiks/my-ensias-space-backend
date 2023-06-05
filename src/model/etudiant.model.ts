@@ -1,11 +1,21 @@
 import { BelongsToGetAssociationMixin, BelongsToManyGetAssociationsMixin, DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyRemoveAssociationMixin, HasOneGetAssociationMixin, Model } from 'sequelize';
 import { sequelize } from '../database/connection';
-import { User } from './user.model';
+import { User, UserInterface } from './user.model';
 import { Role } from './role/role.model';
 import { Poste } from './forum/post.model';
 import { Forum } from './forum/forum.mode';
 import { Acces, Permission } from './forum/acces.model';
 import { Club } from './club.model';
+
+//interface
+export interface EtudiantInterface {
+    id: number,
+    nom: string,
+    prenom: string,
+    cin: string,
+    phone: string,
+    user?: UserInterface
+};
 
 //create user class
 export class Etudiant extends Model {
@@ -16,6 +26,18 @@ export class Etudiant extends Model {
     declare cin: string;
     declare phone: string;
     declare userId: number;
+
+    async getEtudiantInterface(){
+        const etudiantInterface: EtudiantInterface = {
+            id: this.id,
+            nom: this.nom,
+            prenom: this.prenom,
+            cin: this.cin,
+            phone: this.phone,
+            user: (await User.findByPk(this.userId))?.getUserInterface()
+        };
+        return etudiantInterface;
+    }
 
     //get user
     declare getUser: BelongsToGetAssociationMixin<User>;
