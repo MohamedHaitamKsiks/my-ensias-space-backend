@@ -1,15 +1,32 @@
 import { BelongsToManyAddAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyRemoveAssociationMixin, DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, HasManyRemoveAssociationMixin, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, HasOneSetAssociationMixin, Model } from 'sequelize';
 import { sequelize } from '../database/connection';
-import { Etudiant } from './etudiant.model';
+import { Etudiant, EtudiantInterface } from './etudiant.model';
 import { President } from './role/president.model';
 
+
+export interface ClubInterface {
+    id: number,
+    nom: string,
+    description: string,
+    president?: EtudiantInterface
+};
 
 //create club
 export class Club extends Model {
     //declar params
     declare id: number;
-    declare name: string;
+    declare nom: string;
     declare description: string;
+
+    async getClubInterface() {
+        const clubInterface: ClubInterface = {
+            id: this.id,
+            nom: this.nom,
+            description: this.description,
+            president: await (await ((await (await this.getPresident()).getRole()).getEtudiant())).getEtudiantInterface()
+        }
+        return clubInterface;
+    }
 
     //get president
     //...
@@ -30,9 +47,14 @@ Club.init({
         primaryKey: true,
         autoIncrement: true
     },
-    path: {
+    nom: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ""
     }
 },
 //params
@@ -41,3 +63,6 @@ Club.init({
     modelName: 'Club'
 });
 
+Club.afterCreate((instance: Club) => {
+    
+});

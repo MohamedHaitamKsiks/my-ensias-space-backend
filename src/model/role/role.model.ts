@@ -1,13 +1,16 @@
 import { BelongsToGetAssociationMixin, DataTypes, HasOneGetAssociationMixin, Model } from 'sequelize';
 import { sequelize } from '../../database/connection';
 import { Etudiant } from '../etudiant.model';
-import { Delegue } from './delegue.model';
+import { Delegue, DelegueInterface } from './delegue.model';
 import { Classe } from '../classe.model';
+import { President, PresidentInterface } from './president.model';
 
 export enum RoleType {
     PRESIDENT_CLUB,
     DELEGUE
 }
+
+export type RoleInterface = DelegueInterface | PresidentInterface 
 
 //create user class
 export class Role extends Model {
@@ -15,8 +18,19 @@ export class Role extends Model {
     declare type: RoleType;
     //get etudiant owner
     declare getEtudiant: BelongsToGetAssociationMixin<Etudiant>;
-    //get delegue
+
     declare getDelegue: HasOneGetAssociationMixin<Delegue>;
+    declare getPresident: HasOneGetAssociationMixin<President>;
+
+    async getRoleInterface(): Promise<RoleInterface> {
+        if (this.type == RoleType.DELEGUE) {
+            const delegue = await this.getDelegue();
+            return await delegue.getDelegueInterface();
+        }
+        const president = await this.getPresident();
+        return await president.getPresidentInterface();
+    }
+    
     //create delegue
     static async createDelegue(classe: Classe) {
         //create role row

@@ -12,6 +12,7 @@ import { Professeur } from "./matiere/professeur.model";
 import { Acces } from "./forum/acces.model";
 import { Document } from "./document.model";
 import { Club } from "./club.model";
+import { President } from "./role/president.model";
 
 
 export function setupModelRelation() {
@@ -33,6 +34,9 @@ export function setupModelRelation() {
     Role.hasOne(Delegue);
     Delegue.belongsTo(Role);
 
+    //role to president
+    Role.hasOne(President);
+    President.belongsTo(Role);
     
     //emploi to classe
     Classe.hasMany(Emploi);

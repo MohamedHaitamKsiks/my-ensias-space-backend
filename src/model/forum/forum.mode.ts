@@ -5,6 +5,12 @@ import { Acces } from './acces.model';
 import { Etudiant } from '../etudiant.model';
 import { Document } from '../document.model';
 
+//
+export interface ForumInterface {
+    id: number,
+    sujet: string,
+    estFerme: boolean
+};
 
 //create user class
 export class Forum extends Model {
@@ -12,6 +18,14 @@ export class Forum extends Model {
     declare id: number;
     declare sujet: string;
     declare estFerme: boolean;
+
+    getForumInterface(): ForumInterface {
+        return {
+            id: this.id,
+            sujet: this.sujet,
+            estFerme: this.estFerme
+        }
+    }
 
     //posts
     declare getPostes: HasManyGetAssociationsMixin<Poste>;
