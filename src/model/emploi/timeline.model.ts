@@ -2,6 +2,12 @@ import { BelongsToGetAssociationMixin, DataTypes, HasManyAddAssociationMixin, Ha
 import { sequelize } from '../../database/connection';
 import { Emploi } from './emploi.model';
 
+export interface TimelineInterface {
+    id: number,
+    jour: number,
+    debut: number,
+    fin: number
+};
 
 //create user class
 export class Timeline extends Model {
@@ -10,6 +16,15 @@ export class Timeline extends Model {
     declare jour: number;
     declare debut: number;
     declare fin: number;
+
+    getTimelineInterface(): TimelineInterface {
+        return {
+            id: this.id,
+            jour: this.jour,
+            debut: this.debut,
+            fin: this.debut
+        }
+    }
 
     //
     declare getEmploi: BelongsToGetAssociationMixin<Emploi>;

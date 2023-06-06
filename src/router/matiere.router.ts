@@ -4,7 +4,6 @@ import { matiereController } from "../controller/matiere.controller";
 //create router
 export const matiereRouter = express.Router();
 
-
 matiereRouter.get('/', matiereController.getAll);
 
 matiereRouter.post('/add', matiereController.add);

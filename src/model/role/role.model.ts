@@ -4,6 +4,7 @@ import { Etudiant } from '../etudiant.model';
 import { Delegue, DelegueInterface } from './delegue.model';
 import { Classe } from '../classe.model';
 import { President, PresidentInterface } from './president.model';
+import { Club } from '../club.model';
 
 export enum RoleType {
     PRESIDENT_CLUB,
@@ -14,6 +15,7 @@ export type RoleInterface = DelegueInterface | PresidentInterface
 
 //create user class
 export class Role extends Model {
+
     declare id: number;
     declare type: RoleType;
     //get etudiant owner
@@ -44,11 +46,23 @@ export class Role extends Model {
             ClasseId: classe.id
         });
 
-        console.log('new role: ', newRole.id);
-        console.log('new delegue: ', newDelegue.getDataValue('id'));
         return newDelegue;
     }
     //create president club
+    static async createPresident(club: Club) {
+        //create role row
+        const newRole = await Role.create({
+            type: RoleType.PRESIDENT_CLUB
+        });
+
+        //create delegue row
+        const newPresident = await President.create({
+            RoleId: newRole.id,
+            ClubId: club.id
+        });
+
+        return newPresident;
+    }
 }
 
 

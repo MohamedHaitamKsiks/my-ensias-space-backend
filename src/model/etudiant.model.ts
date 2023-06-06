@@ -39,6 +39,11 @@ export class Etudiant extends Model {
         return etudiantInterface;
     }
 
+    //postes
+    declare addPoste: HasManyAddAssociationMixin<Poste, number>;
+    declare getPoste: HasManyGetAssociationsMixin<Poste>;
+    declare removePoste: HasManyRemoveAssociationMixin<Poste, number>;
+
     //get user
     declare getUser: BelongsToGetAssociationMixin<User>;
 
@@ -52,7 +57,7 @@ export class Etudiant extends Model {
     declare removeRole: HasManyRemoveAssociationMixin<Role, number>;
 
     //create forum
-    async createForum(_sujet: string, _desciption: Poste) {
+    async createForum(_sujet: string, _desciption: string) {
         //create forum
         const newForum = await Forum.create({
             sujet: _sujet
@@ -65,7 +70,6 @@ export class Etudiant extends Model {
         await newForum.addAcces(adminAcces);
         //add description poste
         await this.postInForum(newForum, _desciption);
-
         return newForum;
     }
 
@@ -83,22 +87,27 @@ export class Etudiant extends Model {
     }
 
     //post in forum
-    async postInForum(_forum: Forum,_poste: Poste) {
+    async postInForum(_forum: Forum,_texte: string) {
         //check if closed
-        if (_forum.estFerme) {
-            _poste.destroy();
-            return false;
-        }
+        if (_forum.estFerme) 
+            return null;
+        
         //check if can write
         const acces = await _forum.getAccesOf(this);
-        if (!acces || !acces.canWrite()) {
-            _poste.destroy();
-            return false;
-        }
+        if (!acces || !acces.canWrite()) 
+            return null;
+
+        //create poste
+        const poste = await Poste.create({
+            texte: _texte
+        });
+        
         //add poste
-        _poste.setDataValue('EtudiantId', this.id);
-        await _forum.addPoste(_poste);
-        return true;
+        await this.addPoste(poste);
+        await _forum.addPoste(poste);
+        await poste.reload();
+
+        return poste;
     }
 
     //read forum

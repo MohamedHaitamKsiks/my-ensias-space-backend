@@ -4,6 +4,7 @@ import { Etudiant, EtudiantInterface } from './etudiant.model';
 import { Delegue, DelegueInterface } from './role/delegue.model';
 import { Emploi } from './emploi/emploi.model';
 import { Forum, ForumInterface } from './forum/forum.mode';
+import { Role } from './role/role.model';
 
 export interface ClasseInterface {
     id: number,
@@ -27,12 +28,20 @@ export class Classe extends Model {
         const classeInterface: ClasseInterface = {
             id: this.id,
             nom: this.nom,
-            delegue: await etudiant.getEtudiantInterface(),
+            delegue: await etudiant?.getEtudiantInterface(),
             annonce: (await this.getAnnonceForum())?.getForumInterface(),
             discussion: (await this.getDiscussionForum())?.getForumInterface()
 
         }
         return classeInterface;
+    }
+
+    //set forums
+    setAnnonceForum(forum: Forum) {
+        this.annonceId = forum.id
+    }
+    setDiscussionForum(forum: Forum) {
+        this.discussionId = forum.id
     }
 
     //get forums
@@ -100,3 +109,27 @@ Classe.init({
     modelName: 'Classe'
 });
 
+Classe.afterCreate(async (classe: Classe) => {
+    await Role.createDelegue(classe);
+
+    const annonce = await Forum.create({
+        sujet: `${classe.nom} Annonces`
+    });
+    classe.setAnnonceForum(annonce);
+
+    const discussion = await Forum.create({
+        sujet: `${classe.nom} Discussion`
+    });
+    classe.setDiscussionForum(discussion);
+
+    await classe.save();
+    
+});
+
+Classe.beforeDestroy(async (instance: Classe) => {
+    const annonce = await instance.getAnnonceForum();
+    await annonce?.destroy();
+
+    const discussion = await instance.getDiscussionForum();
+    await discussion?.destroy();
+});

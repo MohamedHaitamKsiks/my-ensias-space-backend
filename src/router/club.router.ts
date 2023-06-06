@@ -26,3 +26,4 @@ clubRouter.post('/member/delete/:clubId', clubController.memberRemove);
 clubRouter.get('/president/:clubId', clubController.presidentGet);
 
 clubRouter.post('/president/:clubId', clubController.presidentSet);
+

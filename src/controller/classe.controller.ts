@@ -33,11 +33,12 @@ export const classeController = {
 
     async add(req: Request, res: Response) {
         const newClasse = {
-            id: req.body.id,
-            nom: req.body.string
+            nom: req.body.nom
         }
 
-        const classe = await Classe.create(newClasse);
+        const classe = await Classe.create({
+            nom: newClasse.nom
+        });
         if (!classe) {
             res.statusCode = 400;
             res.send();
@@ -59,7 +60,7 @@ export const classeController = {
         }
 
         const newClasse = {
-            nom: req.body.string
+            nom: req.body.nom
         }
 
         if (newClasse.nom)
@@ -123,7 +124,7 @@ export const classeController = {
             return;
         }
 
-        const etudiantId = parseInt(req.body.id);
+        const etudiantId = parseInt(req.body.etudiantId);
         const etudiant = await Etudiant.findByPk(etudiantId);
     
         if (!etudiant) {
@@ -147,7 +148,7 @@ export const classeController = {
             return;
         }
 
-        const etudiantId = parseInt(req.body.id);
+        const etudiantId = parseInt(req.body.etudiantId);
         const etudiant = await Etudiant.findByPk(etudiantId);
 
         if (!etudiant) {
@@ -186,7 +187,7 @@ export const classeController = {
             return;
         }
 
-        const etudiantId = parseInt(req.body.id);
+        const etudiantId = parseInt(req.body.etudiantId);
         const etudiant = await Etudiant.findByPk(etudiantId);
 
         if (!etudiant) {
@@ -198,7 +199,8 @@ export const classeController = {
         const delegueRole = await (await classe.getDelegue()).getRole();
 
         const oldEtudiant = await delegueRole.getEtudiant();
-        oldEtudiant.removeRole(delegueRole);
+        if(oldEtudiant)
+            oldEtudiant.removeRole(delegueRole);
 
         etudiant.addRole(delegueRole);
 

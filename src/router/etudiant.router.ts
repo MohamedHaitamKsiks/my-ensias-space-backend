@@ -13,7 +13,7 @@ etudiantRouter.post('/delete/:etudiantId', etudiantController.delete);
 
 etudiantRouter.get('/:etudiantId', etudiantController.get);  
 
-etudiantRouter.post('/roles/:etudiantId', etudiantController.getRoles);
+etudiantRouter.get('/roles/:etudiantId', etudiantController.getRoles);
 
 etudiantRouter.post('/edit/:etudiantId', etudiantController.edit);
 

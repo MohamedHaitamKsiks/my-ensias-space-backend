@@ -8,6 +8,13 @@ import { sequelize } from './database/connection';
 import { userRouter } from './router/user.router';
 import { setupModelRelation } from './model/model';
 import { etudiantRouter } from './router/etudiant.router';
+import { classeRouter } from './router/classe.router';
+import { forumRouter } from './router/forum.router';
+import { User } from './model/user.model';
+import { Etudiant } from './model/etudiant.model';
+import { documentRouter } from './router/document.router';
+import { clubController } from './controller/club.controller';
+import { clubRouter } from './router/club.router';
 
 //create app
 export const app = express();
@@ -19,8 +26,8 @@ setupModelRelation();
 //session data
 declare module "express-session" {
     interface SessionData {
-        userId?: number,
-        etudiantId?: number
+        user?: User,
+        etudiant?: Etudiant
     }
 }
 
@@ -50,6 +57,10 @@ export async function startApp() {
     //add routes
     app.use('/user', userRouter);
     app.use('/etudiant', etudiantRouter);
+    app.use('/classe', classeRouter);
+    app.use('/document', documentRouter);
+    app.use('/forum', forumRouter);
+    app.use('/club', clubRouter);
 
     //start app
     server = app.listen(port, () => {

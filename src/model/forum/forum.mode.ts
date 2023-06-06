@@ -2,7 +2,7 @@ import { DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, Has
 import { sequelize } from '../../database/connection';
 import { Poste } from './post.model';
 import { Acces } from './acces.model';
-import { Etudiant } from '../etudiant.model';
+import { Etudiant, EtudiantInterface } from '../etudiant.model';
 import { Document } from '../document.model';
 
 //
@@ -19,12 +19,13 @@ export class Forum extends Model {
     declare sujet: string;
     declare estFerme: boolean;
 
-    getForumInterface(): ForumInterface {
-        return {
+    getForumInterface() {
+        const forumInterface: ForumInterface = {
             id: this.id,
             sujet: this.sujet,
             estFerme: this.estFerme
-        }
+        };
+        return forumInterface;
     }
 
     //posts
@@ -65,6 +66,7 @@ Forum.init({
     },
     sujet: {
         type: DataTypes.STRING,
+        allowNull: false
     },
     estFerme: {
         type: DataTypes.BOOLEAN,

@@ -1,3 +1,6 @@
+#project
+private/
+
 #compiled ts
 build/
 

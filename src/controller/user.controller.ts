@@ -63,19 +63,25 @@ export const userController = {
         const auth: AuthResponse = await User.authentificate(body.email, body.password);
         //set login response
         loginResponse.state = auth.state;
-        if (loginResponse.state == AuthState.VALID) {
+
+
+        if (loginResponse.state == AuthState.VALID && auth.user) {
             //create session
-            req.session.userId = auth.user?.id;
-            loginResponse.user = auth.user?.getUserInterface();
+            const loggedUser = await User.findByPk(auth.user.id);
+            if (loggedUser) 
+                req.session.user = loggedUser
+            loginResponse.user = auth.user.getUserInterface();
         }
 
         //check if etudiant
         if (auth.user?.type == UserType.ETUDIANT) {
-            req.session.etudiantId = (await Etudiant.findOne({
+            const etudiant = await Etudiant.findOne({
                 where: {
-                    userId: req.session.userId
+                    userId: auth.user.id
                 }
-            }))?.id;
+            });
+            if (etudiant)
+                req.session.etudiant = etudiant;
         }
 
         res.statusCode = 200;
@@ -84,35 +90,27 @@ export const userController = {
     //logout
     async logout(req: Request, res: Response) {
         //delete session
-        req.session.userId = undefined;
+        req.session.user = undefined;
         //status code
         res.statusCode = 200;
         res.send();
     },
     //get user info
     async info(req: Request, res: Response) {
-        //get id
-        let userId = req.session.userId;
-
         //user info
-        const user = await User.findByPk(userId);
-        const userInfo = user?.getUserInterface();
-
+        const user = req.session.user;
         //send
         res.statusCode = 200;
-        res.send(userInfo);
+        res.send(user?.getUserInterface());
     },
     //change password
     async changePassowrd(req: Request, res: Response) {
         let response: ChangePassowrdResponse = {
             state: ChangePassowrdState.DONE
         };
-
-        //get id
-        let userId = req.session.userId;
-
         //get user
-        const user = await User.findByPk(userId);
+        const user = req.session.user;
+
         if (!user){
             response.state = ChangePassowrdState.ERROR;
             res.send(response);
@@ -149,7 +147,7 @@ export const userController = {
         };
 
         //check if admin
-        const isAdmin = (await User.findByPk(req.session.userId))?.type == UserType.ADMIN;
+        const isAdmin = req.session.user?.type === UserType.ADMIN;
         if (!isAdmin) {
             response.state = AddAccountState.NOT_ADMIN;
             res.send(response);
